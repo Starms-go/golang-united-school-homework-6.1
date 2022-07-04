@@ -95,8 +95,7 @@ func (b *box) RemoveAllCircles() error {
 	}
 	if circleCount == 0 {
 		return errors.New("There is no circles")
-	} else {
-		b.shapes = newB
 	}
+	b.shapes = newB
 	return nil
 }
