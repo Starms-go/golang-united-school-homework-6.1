@@ -2,6 +2,7 @@ package golang_united_school_homework
 
 import (
 	"errors"
+	"reflect"
 )
 
 const TNSI = "There is no such index"
@@ -83,19 +84,36 @@ func (b *box) SumArea() (sum float64) {
 // RemoveAllCircles removes all circles in the list
 // whether circles are not exist in the list, then returns an error
 func (b *box) RemoveAllCircles() error {
-	var circleCount int
-	newB := []Shape{}
-	for _, v := range b.shapes {
-		_, ok := v.(Circle)
-		if !ok {
-			newB = append(newB, v)
-		} else {
-			circleCount++
+	// var circleCount int
+	// newB := []Shape{}
+	// for _, v := range b.shapes {
+	// 	_, ok := v.(Circle)
+	// 	if !ok {
+	// 		newB = append(newB, v)
+	// 	} else {
+	// 		circleCount++
+	// 	}
+	// }
+	// if circleCount == 0 {
+	// 	return errors.New("There are no circles")
+	// }
+	// b.shapes = newB
+	// return nil
+	circle := &Circle{}
+	c := 0
+	var err error
+	for i := 0; i < len(b.shapes); i++ {
+		if reflect.TypeOf(b.shapes[i]) == reflect.TypeOf(circle) {
+			copy(b.shapes[i:], b.shapes[i+1:])
+			b.shapes = b.shapes[:len(b.shapes)-1]
+			c = c + 1
+			i = i - 1
 		}
 	}
-	if circleCount == 0 {
-		return errors.New("There is no circles")
+	if c == 0 {
+		err = errors.New("There are no circles")
+	} else {
+		err = nil
 	}
-	b.shapes = newB
-	return nil
+	return err
 }
