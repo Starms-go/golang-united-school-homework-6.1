@@ -4,6 +4,8 @@ import (
 	"errors"
 )
 
+const TNSI = "There is no such index"
+
 // box contains list of shapes and able to perform operations on them
 type box struct {
 	shapes         []Shape
@@ -32,7 +34,7 @@ func (b *box) AddShape(shape Shape) error {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) GetByIndex(i int) (Shape, error) {
 	if i < 0 || i >= len(b.shapes) {
-		return nil, errors.New("There is no such index")
+		return nil, errors.New(TNSI)
 	}
 	return b.shapes[i], nil
 }
@@ -40,11 +42,13 @@ func (b *box) GetByIndex(i int) (Shape, error) {
 // ExtractByIndex allows getting shape by index and removes this shape from the list.
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ExtractByIndex(i int) (Shape, error) {
+	var oldShape Shape
 	if i < 0 || i >= len(b.shapes) {
-		return nil, errors.New("There is no such index")
+		return nil, errors.New(TNSI)
 	}
+	oldShape = b.shapes[i]
 	b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
-	return b.shapes[i], nil
+	return oldShape, nil
 }
 
 // ReplaceByIndex allows replacing shape by index and returns removed shape.
@@ -52,7 +56,7 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 func (b *box) ReplaceByIndex(i int, shape Shape) (Shape, error) {
 	var oldShape Shape
 	if i < 0 || i >= len(b.shapes) {
-		return nil, errors.New("There is no such index")
+		return nil, errors.New(TNSI)
 	}
 	oldShape = b.shapes[i]
 	b.shapes[i] = shape
@@ -84,6 +88,7 @@ func (b *box) RemoveAllCircles() error {
 		_, ok := v.(Circle)
 		if ok {
 			b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
+			circleCount++
 		}
 	}
 	if circleCount == 0 {
